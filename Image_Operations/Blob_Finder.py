@@ -32,15 +32,35 @@ class Blob_Finder():
 
 
     # Find the button top left (clock or trapeze) blobs
-    def button_blob(self, img, testing = False):
+    def button_blob(self, img):
         # Find all blobs
         all_blobs = img.findBlobs()
         if all_blobs == None:
             return None
-        # Select the one, closest to the middle of the left edge (x=1, y = height/2)
-        # main_blob = all_blobs.sortDistance((1, img.height/2))[0]
         # Select the one which minimum X value is smallest (closest to the left edge)
         main_blob = all_blobs[0]
         for single_blob in all_blobs:
             if single_blob.minX() < main_blob.minX(): main_blob = single_blob
         return main_blob
+
+    # Find the temperature 18/64 blobs - closest to the left edge
+    def temperature_blob(self, img):
+        # Find all blobs
+        all_blobs = img.findBlobs()
+        if all_blobs == None:
+            return None
+        # Select the one which minimum X value is smallest (closest to the left edge)
+        main_blob = all_blobs[0]
+        for single_blob in all_blobs:
+            if single_blob.minX() < main_blob.minX(): main_blob = single_blob
+        return main_blob
+
+    # Find the controller blob - one at the top.
+    def controller_blob(self, img):
+        # Find all blobs
+        all_blobs = img.findBlobs(minsize = 5)
+        if all_blobs == None:
+            return None
+        # Select the biggest one in the image
+        biggest_blob = all_blobs.sortArea()[-1]
+        return biggest_blob

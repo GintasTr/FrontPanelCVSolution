@@ -1,6 +1,4 @@
 from sys import argv
-from SimpleCV import *
-# LOTS OF IMPORTS AND CONFIGS
 from Parts_Handler import Parts_Handler
 from Operator_Interface import Operator_Interface
 
@@ -15,43 +13,37 @@ operator_interface = Operator_Interface(PANEL_PLACEMENT_LOCATION)
 parts_handler = Parts_Handler(PANEL_PLACEMENT_LOCATION)
 
 
-
-
-
 # MAIN SOFTWARE LOOP
 def perform_panel_check():
     # Pass the parameters list to the parts handler to identify the required parts
-    # and store it for later comparison
-    # Returns string in format of either "ERROR - of some kind" or "SUCCESS"
     required_parts = parts_handler.parts_required(argv)
 
-    # Check if it returned error and terminate if so. #TODO: Replace with try/catch
-    if type(required_parts) == str:
-        if required_parts[0] == "E":
-            print required_parts
-            return required_parts
+    # Check if it returned error (string, where it should return dictionary) and terminate if so, returning the error.
+    if type(required_parts) == str: print required_parts; return required_parts
 
     # Get the testing image
     img = operator_interface.get_required_image()
-    # Check if it returned error and terminate if so.
+
+    # Check if it returned error (string, where it should return image)and terminate if so.
     if type(img) == str:
-        if img[0] == "E":
-            print img
-            return img
+        if img[0] == "E": print img; return img
 
 
     # Identify which parts are mounted currently
     parts_present = parts_handler.parts_present(img)
-    # # Check if it returned error and terminate if so.
-    if type(parts_present) == str:
-        if parts_present[0] == "E":
-            print parts_present
-            return parts_present
+
+    # Check if it returned error (string, where it should return dictionary) and terminate if so.
+    if type(parts_present) == str: print parts_present; return parts_present
 
     # Compare the present parts with required parts
-    # test_result = Parts_Handler.compare_parts(required_parts, parts_present)
+    test_result = parts_handler.compare_parts(required_parts, parts_present)
 
-
+    # Compile the result report
+    if "Failed" in test_result.values():
+        # if at least one failed, then:
+        return "FAILED TEST", str(test_result)
+    # If no fails happened
+    else: return "PASSED TEST", str(test_result)
 
 
 

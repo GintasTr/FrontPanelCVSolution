@@ -20,8 +20,8 @@ class Filter():
         img = img.dilate(2)
         return img
 
-    # Function to apply brigthness and other filters in order to find the parts appearance
-    def parts_identification_filter(self, img):
+    # Function to apply brigthness and other filters in order to find the button appearance
+    def button_identification_filter(self, img):
         # Brigthness level to binarize to:
         BINARIZE_THRESH = 90
         # Make image binary (totally black or totally white)
@@ -32,6 +32,32 @@ class Filter():
         # img = img.morphClose()
         return img
 
+
+    # Function to apply brigthness and other filters in order to find the temperature scale
+    def temperature_filter(self, img):
+        # Brigthness level to binarize to:
+        BINARIZE_THRESH = 150
+        # Make image binary (totally black or totally white)
+        img = img.binarize(thresh = BINARIZE_THRESH)
+        # Invert the results - white parts are actually white
+        img = img.invert()
+        # Shirnk the features - so that 64 becomes 2 small and 18 becomes one large blob
+        # img = img.erode()
+        # img = img.dilate(2)
+        img = img.morphClose()
+        return img
+
+    # Function to apply brightness and other filters in order to find controller appearance
+    def controller_filter(self, img):
+        # Brightness level to binarize to:
+        BINARIZE_THRESH = 150
+        # Make image binary (totally black or totally white)
+        img = img.binarize(thresh=BINARIZE_THRESH)
+        # Invert the results - white parts are actually white
+        img = img.invert()
+        # Shirnk the features - so that images on people disconnect from each other
+        # img = img.morphOpen()
+        return img
 
 
 if __name__ == '__main__':

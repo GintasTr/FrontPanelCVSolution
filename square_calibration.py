@@ -93,10 +93,12 @@ if __name__ == '__main__':
         square_calibration()
     elif testing_module == "relative_crop":
         BUTTON_CROPPING_LOCATION = ((41,129),(74,200))
-        TEMPERATURE_CROPPING_LOCATION = ((208,265),(239,314))
+
+        TEMPERATURE_CROPPING_LOCATION = ((208,265),(239,314))#((203,78),(225,120))
+
         CONTROLLER_CROPPING_LOCATION = ((300,70),(350,125))
 
-        CROPPING_LOCATION = BUTTON_CROPPING_LOCATION
+        CROPPING_LOCATION = TEMPERATURE_CROPPING_LOCATION
 
         cropping_calibration(PANEL_PLACEMENT_LOCATION, CROPPING_LOCATION)
 

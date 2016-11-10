@@ -19,20 +19,22 @@ class Display_Painter():
         self.WIDTH = 5
 
     # Draws the components on the screen needed for the start request image
-    def start_request_image(self, img, PANEL_PLACEMENT_LOCATION, state):
+    def start_request_image(self, img, PANEL_PLACEMENT_LOCATION, initial_request):
         # Check which tesxt has to be printed: True - first request, False - scan again
-        if state:
-            upper_text, lower_text = self.REQUEST_TEXT, self.REQUEST_TEXT_LOWER
-        else:
-            upper_text, lower_text = self.SCAN_AGAIN_TEXT, self.SCAN_AGAIN_TEXT_LOWER
+        if initial_request: upper_text, lower_text = self.REQUEST_TEXT, self.REQUEST_TEXT_LOWER
+        else: upper_text, lower_text = self.SCAN_AGAIN_TEXT, self.SCAN_AGAIN_TEXT_LOWER
+
         # Set the font size
         img.dl().setFontSize(self.FONTSIZE)
+
         # Print the text
         img.dl().text(upper_text, self.UPPER_TEXTLOCATION, color = self.COLOR)
         img.dl().text(lower_text, self.LOWER_TEXTLOCATION, color = self.COLOR)
+
         # Draw the square
         img.dl().rectangle2pts(PANEL_PLACEMENT_LOCATION["TOPLEFT"],
                                PANEL_PLACEMENT_LOCATION["BOTRIGHT"],
                                Color.RED, self.WIDTH)
+
         # Return the modified image
         return img

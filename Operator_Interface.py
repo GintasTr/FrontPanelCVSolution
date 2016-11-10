@@ -24,20 +24,23 @@ class Operator_Interface():
     # Function which acquires the required image from the camera
     def get_required_image(self):
         # Initialise the request image: True - first request, False - scan again
-        which_request = True
+        initial_request = True
         while True:
             # Capture the image
             img = self.cam.get_image()
+
             # Show it with the request to put it in the correct location
-            img_shown = self.painter.start_request_image(img, self.PANEL_PLACEMENT_LOCATION, which_request)
+            img_shown = self.painter.start_request_image(img, self.PANEL_PLACEMENT_LOCATION, initial_request)
+
             # Check if mouse left was clicked on the image
             if self.disp.show_briefly_till_mouse(img_shown)[0] == "L":
-                # Check if obtained image is correct by checking if something was returned
-                if self.parts_identification.find_panel(img):
-                    return img
+
+                # Check if obtained image is correct by checking if panel was found
+                if self.parts_identification.find_panel(img): return img
+
                 # If that image was not correct change the displayed request
-                else:
-                    which_request = False
+                else: initial_request = False
+            # If screen was right clicked, terminate by ERROR.
             if self.disp.show_briefly_till_mouse(img)[0] == "R":
                 return "ERROR - stopped by user"
 

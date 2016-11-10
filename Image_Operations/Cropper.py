@@ -19,7 +19,7 @@ class Cropper():
         # Relative cropping values for button:
         BUTTON_LOCATION = ((41,129),(74,200))
         TEMPERATURE_LOCATION = ((208,265),(239,314))
-        CONTROLLER_LOCATION = ((300,70),(350,125))
+        CONTROLLER_LOCATION = ((310,70),(340,125))
 
         if case == "button":
             relative_location = BUTTON_LOCATION

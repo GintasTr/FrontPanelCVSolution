@@ -44,7 +44,7 @@ class Parts_Identification():
         if testing: img_cropped = img
 
         # Filter the image so that we have only white parts and store the filtered image if in testing mode
-        img = self.filter.parts_identification_filter(img)
+        img = self.filter.button_identification_filter(img)
         if testing: img_filtered = img
 
         # Find the actual button we are interested in and return error if it was not found (and not testing mode)
@@ -61,22 +61,65 @@ class Parts_Identification():
             return 'trapeze'
 
 
-
     # Function to identify which temperature is present: "celsius" or "fahrenheit"
-    def which_temperature(self, img):
-        None
+    def which_temperature(self, img, testing = False):
+
+        # Find the front panel in the image and check if it was correctly found
+        panel_location = self.find_panel(img)
+        if panel_location == None: return "Error - front panel was not found"
+
+        # Crop to the 64/18 number edges (including blue thing) and store cropped image if in testing mode
+        img = self.cropper.relative_crop(img, panel_location, "temperature")
+        if testing: img_cropped = img
+
+        # Filter the image so that we have only white parts and store the filtered image if in testing mode
+        img = self.filter.temperature_filter(img)
+        if testing: img_filtered = img
+
+        # Find temperature blob that we are interested in and return error if it was not found (and not testing mode)
+        temperature_blob = self.blob_finder.temperature_blob(img)
+        if (temperature_blob == None) and (not testing): return "Error - temperature scale was not found correctly"
+
+        # Return values in testing mode
+        if testing: return {'crop': img_cropped, 'filter': img_filtered, 'blob': temperature_blob}
+
+        # Check the scale numbers blob width. If less than 12 - its 18 (celsius). If more - its 64 (fahrenheit)
+        if temperature_blob.width() < 12: return 'celsius'
+        else: return 'fahrenheit'
 
 
 # Function to identify which controller is present: "figures" or "squares"
-    def which_controller(self, img):
-        None
+    def which_controller(self, img, testing = False):
+
+        # Find the front panel in the image and check if it was correctly found
+        panel_location = self.find_panel(img)
+        if panel_location == None: return "Error - front panel was not found"
+
+        # Crop to the location at the top of the controller knob and store cropped image if in testing mode
+        img = self.cropper.relative_crop(img, panel_location, "controller")
+        if testing: img_cropped = img
+
+        # Filter the image so that we have only white parts and store the filtered image if in testing mode
+        img = self.filter.controller_filter(img)
+        if testing: img_filtered = img
+
+        # Find controller blob that we are interested in and return error if it was not found (and not testing mode)
+        controller_blob = self.blob_finder.controller_blob(img)
+        if (controller_blob == None) and (not testing): return "Error - temperature scale was not found correctly"
+
+        # Return values in testing mode
+        if testing: return {'crop': img_cropped, 'filter': img_filtered, 'blob': controller_blob}
+
+        # Check the scale numbers blob width. If less than 12 - its 18 (celsius). If more - its 64 (fahrenheit)
+        if controller_blob.area() < 40: return 'figures'
+        else: return 'squares'
 
 
 
 
 if __name__ == '__main__':
-    # select the testing mode from: "find_panel", "button"
-    testing_mode = "button"
+    # select the testing mode from: "find_panel", "button", "temperature", "controller"
+    testing_mode = "controller"
 
     # select the testing section from "cropping", "filtering", "blobbing"
     testing_section = "blobbing"
@@ -86,7 +129,7 @@ if __name__ == '__main__':
                                 "BOTRIGHT": (990, 600)}
     testing_thing = Parts_Identification(PANEL_PLACEMENT_LOCATION)
     cam = Camera(0, {"width": 1280, "height": 720})
-    disp = Display((1548,768))
+    disp = Display((1700,720))
 
     while disp.isNotDone():
         img = cam.getImage()
@@ -96,37 +139,27 @@ if __name__ == '__main__':
 
         if testing_mode == "find_panel": test_result = testing_thing.find_panel(img, True)
         elif testing_mode == "button": test_result = testing_thing.which_button(img, True)
+        elif testing_mode == "temperature": test_result = testing_thing.which_temperature(img, True)
+        elif testing_mode == "controller": test_result = testing_thing.which_controller(img, True)
 
         if type(test_result) == str: print "Str received, probably panel not found"; img.save(disp); continue
 
         cropped_image, filtered_image, found_blob = test_result['crop'],test_result['filter'],test_result['blob']
 
         if testing_section == "cropping": img = cropped_image
-        elif testing_section == "filtering": img = img.sideBySide(filtered_image)
+        elif testing_section == "filtering": img = filtered_image
         elif testing_section == "blobbing":
             if found_blob:
-                if found_blob.circleDistance() < 0.6: tmp_color = Color.GREEN
+                # if found_blob.circleDistance() < 0.6: tmp_color = Color.GREEN
+                # if found_blob.width() < 12: tmp_color = Color.GREEN
+                if found_blob.area() < 40: tmp_color = Color.GREEN
                 else: tmp_color = Color.RED
                 found_blob.draw(color=tmp_color, width=1, alpha=-1, layer=filtered_image.dl())
-                # print "Biggest blob area is:", found_blob.area()
+                print "Biggest blob area is:", found_blob.area()
                 # print "Biggest blob width is:", found_blob.width()
                 # print "Biggest blob height is:", found_blob.height()
-                print "Distance to circle is:", found_blob.circleDistance()
+                # print "Distance to circle is:", found_blob.circleDistance()
                 # print found_blob.minX()
                 img = filtered_image
+            else: print "Blob was not found"
         img.save(disp)
-
-    # elif testing_mode == "something else":
-    #     # to test WHICH_* and filters
-    #     img =  cam.getImage()
-    #     img1 = testing_thing.which_button(img, True)
-    #     if (type(img1) == str):
-    #         print img1
-    #         img.save(disp)
-    #     else:
-    #         # # To test filter
-    #         # img3 = img1[0].sideBySide(img1[1])
-    #         # img3.save(disp)
-    #
-    #         # To test WHICH_* and blob finder
-    #         img1.save(disp)
