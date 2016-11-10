@@ -1,6 +1,7 @@
 from SimpleCV import *
 from Image_Operations.Cropper import Cropper
 from Image_Operations.Filter import Filter
+from Image_Operations.Blob_Finder import Blob_Finder
 import time
 
 class Parts_Identification():
@@ -12,6 +13,8 @@ class Parts_Identification():
         self.cropper = Cropper(self.coordinates["TOPLEFT"], self.coordinates["BOTRIGHT"])
         # Filter object - used to apply filters and morphops to image
         self.filter = Filter()
+        # Blob finder object - used to find the needed blobs in the image
+        self.blob_finder = Blob_Finder()
         # Panel size limits for confirmation:
         self.MINIMUM_PANEL_SIZE, self.MAXIMUM_PANEL_SIZE = 134000, 143000
 
@@ -33,7 +36,7 @@ class Parts_Identification():
         # If any of the blobs were found, get only ones which are not on the edge
         all_blobs = all_blobs.notOnImageEdge()
         # If none of the blobs were found, return that image is not good
-        if len(all_blobs)== 0:
+        if len(all_blobs) == 0:
             return None
         # Check whether biggest one(representing panel) passes the dimension requirements
         biggest_blob = all_blobs.sortArea()[-1]
@@ -57,15 +60,39 @@ class Parts_Identification():
 
 
     # Function to identify which button is present: "Clock" or "trapeze"
-    def which_button(self, img):
+    def which_button(self, img, testing = False):
         # Find the front panel in the image
         panel_location = self.find_panel(img)
         # Check if it was correctly found
         if panel_location == None: return "Error - front panel was not found"
         # Crop to the button edges
         img = self.cropper.relative_crop(img, panel_location, "button")
-        return img
-
+        # Filter the image so that we have only white parts
+        img1 = self.filter.parts_identification_filter(img)
+        # When testing cropper of filters
+        # if testing:
+        #     # To test cropper:
+        #     #return img
+        #     # To test filters:
+        #     return (img, img1)
+        # Clear testing variable, for simplicity
+        img = img1
+        # # When testing main blob finding
+        if testing:
+            img1 = self.blob_finder.button_blob(img, True)
+        # Find the actual button we are interested in
+        button_blob = self.blob_finder.button_blob(img)
+        # Return error if main button blob was not found
+        if button_blob == None: return "Error - button was not found correctly"
+        # When testing main blob_circle distance
+        if testing:
+            print "Circle distance is:", button_blob.circleDistance()
+            return img1
+        # Check the button similarity to circle. If less than 0.35 - its clock. If more - its trapeze
+        if button_blob.circleDistance() <0.35:
+            return 'clock'
+        else:
+            return 'trapeze'
 
 
 
@@ -103,12 +130,16 @@ if __name__ == '__main__':
         #     #img2 = img.sideBySide(img1)
         #     #img2.save(disp)
 
-        # to test WHICH_BUTTON
+        # to test WHICH_* and filters
         img =  cam.getImage()
-        img1 = testing_thing.which_button(img)
+        img1 = testing_thing.which_button(img, True)
         if (type(img1) == str):
             print img1
             img.save(disp)
         else:
-            img1.save(disp)
+            # # To test filter
+            # img3 = img1[0].sideBySide(img1[1])
+            # img3.save(disp)
 
+            # To test WHICH_* and blob finder
+            img1.save(disp)

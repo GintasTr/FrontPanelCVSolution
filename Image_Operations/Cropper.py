@@ -15,11 +15,11 @@ class Cropper():
 
 
     # Crop for the specific feature
-    def relative_crop(self, img, panel_blob, case):
+    def relative_crop(self, img, panel_blob, case, testing = False):
         # Relative cropping values for button:
-        BUTTON_LOCATION = ((10,32),(19,49))
-        TEMPERATURE_LOCATION = ((10,32),(19,49))
-        CONTROLLER_LOCATION = ((10,32),(19,49))
+        BUTTON_LOCATION = ((41,129),(74,195))
+        TEMPERATURE_LOCATION = ((208,265),(239,314))
+        CONTROLLER_LOCATION = ((300,70),(350,125))
 
         if case == "button":
             relative_location = BUTTON_LOCATION
@@ -36,27 +36,15 @@ class Cropper():
         # Crop the image around the main panel blob
         img = img.crop(panel_blob.topLeftCorner(),
                        panel_blob.bottomRightCorner())
-        print panel_blob.width()
-        print panel_blob.height()
+
         # Calculating actual pixel values required for cropping
-        cropping_top_left = (panel_blob.width() * relative_location[0][0]/100,
-                             panel_blob.height() * relative_location[0][1]/100)
-        cropping_bot_rigth = (panel_blob.width() * relative_location[1][0] / 100,
-                              panel_blob.height() * relative_location[1][1] / 100)
-
-        print cropping_top_left
-        print cropping_bot_rigth
-
+        cropping_top_left = (panel_blob.width() * relative_location[0][0]/400,
+                             panel_blob.height() * relative_location[0][1]/400)
+        cropping_bot_rigth = (panel_blob.width() * relative_location[1][0] / 400,
+                              panel_blob.height() * relative_location[1][1] / 400)
         # Cropping around the required relative location
         img = img.crop(cropping_top_left,cropping_bot_rigth)
-
         return img
-
-
-
-
-
-
 
 
 if __name__ == '__main__':
@@ -70,6 +58,6 @@ if __name__ == '__main__':
 
     while disp.isNotDone():
         img =  cam.getImage()
-        # img = testing_cropper.image_confirmation_crop(img)
-        # ADD OTHER CROPPING LOCATIONS FOR TESTING
+        img = testing_cropper.placement_location_crop(img)
+        # Use Parts identification to test relative crop
         img.save(disp)

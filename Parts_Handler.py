@@ -48,7 +48,7 @@ class Parts_Handler:
         return required_panel
 
     # Function to check which parts are actually present
-    def parts_present(self, img): #TODO replace with try/catch
+    def parts_present(self, img):
         # Identify the button
         button = self.parts_identification.which_button(img)
         # If button was not found - ERROR was returned

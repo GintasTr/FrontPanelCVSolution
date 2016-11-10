@@ -51,10 +51,10 @@ def cropping_calibration(panel_coordinates, button_location):
         # CHANGE HERE:
         # img = img2
 
-        cropping_top_left = (main_blob.width() * button_location[0][0]/100,
-                             main_blob.height() * button_location[0][1]/100)
-        cropping_bot_rigth = (main_blob.width() * button_location[1][0] / 100,
-                             main_blob.height() * button_location[1][1] / 100)
+        cropping_top_left = (main_blob.width() * button_location[0][0]/400,
+                             main_blob.height() * button_location[0][1]/400)
+        cropping_bot_rigth = (main_blob.width() * button_location[1][0] / 400,
+                             main_blob.height() * button_location[1][1] / 400)
         img.dl().rectangle2pts(cropping_top_left,
                                cropping_bot_rigth,
                                Color.RED, 3)
@@ -63,10 +63,10 @@ def cropping_calibration(panel_coordinates, button_location):
 
         if disp.mouseLeft:
             local_result = [disp.mouseX, disp.mouseY]  # Show coords on screen with modifiable square size
-            text = "X:" + str(local_result[0]) + "," + str(local_result[0]*100/main_blob.width()) + \
-                   " Y:" + str(local_result[1]) + "," + str(local_result[1]*100/main_blob.height())
-            text2 = "X is a part of: ", (local_result[0]*100/main_blob.width())
-            text3 = "Y is a part of: ", (local_result[1]*100/main_blob.height())
+            text = "X:" + str(local_result[0]) + "," + str(local_result[0]*400/main_blob.width()) + \
+                   " Y:" + str(local_result[1]) + "," + str(local_result[1]*400/main_blob.height())
+            text2 = "X is a part of: ", (local_result[0]*400/main_blob.width())
+            text3 = "Y is a part of: ", (local_result[1]*400/main_blob.height())
             print text
             print text2
             print text3
@@ -87,8 +87,14 @@ def cropping_calibration(panel_coordinates, button_location):
 if __name__ == '__main__':
     # TO TEST CROPPING:
     PANEL_PLACEMENT_LOCATION = {"TOPLEFT": (290, 220), "BOTRIGHT": (990, 600)}
-    BUTTON_CROPPING_LOCATION = ((10,32),(19,49))
+    # BUTTON LOCATION
+    # BUTTON_CROPPING_LOCATION = ((41,129),(74,195))
+    # TEMPERATURE LOCATION
+    TEMPERATURE_CROPPING_LOCATION = ((208,265),(239,314))
+    # CONTROLLER LOCATION
+    # CONTROLLER_CROPPING_LOCATION = ((300,70),(350,125))
+
     # square_calibration()
-    cropping_calibration(PANEL_PLACEMENT_LOCATION, BUTTON_CROPPING_LOCATION)
+    cropping_calibration(PANEL_PLACEMENT_LOCATION, TEMPERATURE_CROPPING_LOCATION)
 
 

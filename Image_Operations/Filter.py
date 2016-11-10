@@ -20,6 +20,18 @@ class Filter():
         img = img.dilate(2)
         return img
 
+    # Function to apply brigthness and other filters in order to find the parts appearance
+    def parts_identification_filter(self, img):
+        # Brigthness level to binarize to:
+        BINARIZE_THRESH = 90
+        # Make image binary (totally black or totally white)
+        img = img.binarize(thresh = BINARIZE_THRESH)
+        # Invert the results - white parts are actually white
+        img = img.invert()
+        # # Seperate specific features ("UNGLUE")
+        # img = img.morphClose()
+        return img
+
 
 
 if __name__ == '__main__':
