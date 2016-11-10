@@ -85,16 +85,20 @@ def cropping_calibration(panel_coordinates, button_location):
 
 # If it is launched as a main
 if __name__ == '__main__':
-    # TO TEST CROPPING:
+    # Select which one to check for "panel_placement" or "relative_crop"
+    testing_module = "relative_crop"
     PANEL_PLACEMENT_LOCATION = {"TOPLEFT": (290, 220), "BOTRIGHT": (990, 600)}
-    # BUTTON LOCATION
-    # BUTTON_CROPPING_LOCATION = ((41,129),(74,195))
-    # TEMPERATURE LOCATION
-    TEMPERATURE_CROPPING_LOCATION = ((208,265),(239,314))
-    # CONTROLLER LOCATION
-    # CONTROLLER_CROPPING_LOCATION = ((300,70),(350,125))
 
-    # square_calibration()
-    cropping_calibration(PANEL_PLACEMENT_LOCATION, TEMPERATURE_CROPPING_LOCATION)
+    if testing_module == "panel_placement":
+        square_calibration()
+    elif testing_module == "relative_crop":
+        BUTTON_CROPPING_LOCATION = ((41,129),(74,200))
+        TEMPERATURE_CROPPING_LOCATION = ((208,265),(239,314))
+        CONTROLLER_CROPPING_LOCATION = ((300,70),(350,125))
+
+        CROPPING_LOCATION = BUTTON_CROPPING_LOCATION
+
+        cropping_calibration(PANEL_PLACEMENT_LOCATION, CROPPING_LOCATION)
+
 
 

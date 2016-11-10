@@ -15,9 +15,9 @@ class Cropper():
 
 
     # Crop for the specific feature
-    def relative_crop(self, img, panel_blob, case, testing = False):
+    def relative_crop(self, img, panel_blob, case):
         # Relative cropping values for button:
-        BUTTON_LOCATION = ((41,129),(74,195))
+        BUTTON_LOCATION = ((41,129),(74,200))
         TEMPERATURE_LOCATION = ((208,265),(239,314))
         CONTROLLER_LOCATION = ((300,70),(350,125))
 
