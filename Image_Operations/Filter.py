@@ -23,7 +23,7 @@ class Filter():
     # Function to apply brigthness and other filters in order to find the button appearance
     def button_identification_filter(self, img):
         # Brigthness level to binarize to:
-        BINARIZE_THRESH = 90
+        BINARIZE_THRESH = 75 #90
         # Make image binary (totally black or totally white)
         img = img.binarize(thresh = BINARIZE_THRESH)
         # Invert the results - white parts are actually white

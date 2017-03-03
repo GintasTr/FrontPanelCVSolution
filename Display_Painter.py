@@ -20,7 +20,7 @@ class Display_Painter():
 
     # Draws the components on the screen needed for the start request image
     def start_request_image(self, img, PANEL_PLACEMENT_LOCATION, initial_request):
-        # Check which tesxt has to be printed: True - first request, False - scan again
+        # Check which text has to be printed: True - first request, False - scan again
         if initial_request: upper_text, lower_text = self.REQUEST_TEXT, self.REQUEST_TEXT_LOWER
         else: upper_text, lower_text = self.SCAN_AGAIN_TEXT, self.SCAN_AGAIN_TEXT_LOWER
 

@@ -1,4 +1,5 @@
-from sys import argv
+import sys
+
 from Parts_Handler import Parts_Handler
 from Operator_Interface import Operator_Interface
 
@@ -16,7 +17,7 @@ parts_handler = Parts_Handler(PANEL_PLACEMENT_LOCATION)
 # MAIN SOFTWARE LOOP
 def perform_panel_check():
     # Pass the parameters list to the parts handler to identify the required parts
-    required_parts = parts_handler.parts_required(argv)
+    required_parts = parts_handler.parts_required(sys.argv)
 
     # Check if it returned error (string, where it should return dictionary) and terminate if so, returning the error.
     if type(required_parts) == str: print required_parts; return required_parts
@@ -41,13 +42,19 @@ def perform_panel_check():
     # Compile the result report
     if "Failed" in test_result.values():
         # if at least one failed, then:
-        return "FAILED TEST", str(test_result)
+        print 'FAILED TEST', test_result
     # If no fails happened
-    else: return "PASSED TEST", str(test_result)
+    else: print 'PASSED TEST', test_result
 
-
+    return None
 
 # If called by itself (Usually this is the case)
 if __name__ == '__main__':
-    print "starting"
-    print perform_panel_check()
+    try:
+        perform_panel_check()
+    except (KeyboardInterrupt, SystemExit):  # If user wants to exit software
+        print "ERROR - User initiated SystemExit."
+        raise
+    except:
+        print "Unexpected ERROR while scanning the panel: ", sys.exc_info()[0]
+        raise

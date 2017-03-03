@@ -6,7 +6,7 @@ class Camera_Interface():
     def __init__(self, resolution):
         # Creating camera object. SET THE RESOLUTION HERE
         self.cam = Camera(0, resolution)
-        time.sleep(1)
+        time.sleep(0.5)
 
     # Function to capture single frame
     def get_image(self):

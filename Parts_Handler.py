@@ -65,7 +65,6 @@ class Parts_Handler:
         for key in required_parts:
             if required_parts[key] == parts_present[key]: result[key] = "Passed"
             else: result[key] = "Failed"
-        print "Result is:", result
         return result
 
 
